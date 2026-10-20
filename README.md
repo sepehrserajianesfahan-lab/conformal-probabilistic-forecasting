@@ -15,8 +15,18 @@ Standard machine learning models output point forecasts, which are insufficient 
 
 ## Methodology
 
-1. **Physical Transformation:** Raw meteorological wind speed ($v$) is mapped to power generation using:
-   $$P(v) = \begin{cases} 0 & v < v_{in} \text{ or } v > v_{out} \\ P_{rated} \left(\frac{v - v_{in}}{v_{rated} - v_{in}}\right)^3 & v_{in} \le v \le v_{rated} \\ P_{rated} & v_{rated} < v \le v_{out} \end{cases}$$
+## Methodology
+
+1. **Physical Transformation:** Raw meteorological wind speed ($v$) is mapped to power generation using the standard cubic turbine formulation below:
+
+$$P(v) = \begin{cases} 
+0 & v < v_{in} \text{ or } v > v_{out} \\ 
+P_{rated} \left(\frac{v - v_{in}}{v_{rated} - v_{in}}\right)^3 & v_{in} \le v \le v_{rated} \\ 
+P_{rated} & v_{rated} < v \le v_{out} 
+\end{cases}$$
+
+2. **Point Forecasting:** Trains a Gradient Boosting regressor on temporal lag features to predict power output.
+3. **Conformal Calibration:** Computes absolute residuals on a held-out calibration set and derives the adjusted $(1 - \alpha)$ quantile threshold ($\hat{q}$) to bound future predictions symmetrically.
 2. **Point Forecasting:** Trains a Gradient Boosting regressor on temporal lag features to predict power output.
 3. **Conformal Calibration:** Computes absolute residuals on a held-out calibration set and derives the adjusted $(1 - \alpha)$ quantile threshold ($\hat{q}$) to bound future predictions symmetrically.
 
